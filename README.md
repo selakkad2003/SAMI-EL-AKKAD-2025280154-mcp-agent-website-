@@ -1,24 +1,27 @@
-# AI-Based Emergent Narrative Experience Design and Implementation
+# SSO2: Magical Learning Adventure 🧙‍♂️📚
 
-## 🚀 Project Overview
-
-**Project Name:** SSO2: Magical Learning Adventure (Gamified Learning Odyssey)
-
-**Brief Description:** 
-SSO2 (Story-based Study Odyssey 2) is an emergent narrative educational application powered by generative AI. It transforms the mundane learning process into a fantastical "Hero's Journey." By deeply integrating Large Language Models (LLMs), the app dynamically generates unique narrative text, interactive challenges, and visual guidance based on any learning topic or document provided by the user, achieving a peak "edutainment" experience.
+**SSO2 (Story-based Study Odyssey 2)** is an emergent narrative educational application powered by generative AI. It transforms the mundane learning process into a fantastical "Hero's Journey." By deeply integrating Large Language Models (LLMs), the app dynamically generates unique narrative text, interactive challenges, and visual guidance based on any learning topic or document provided by the user, achieving a peak "edutainment" experience.
 
 ---
 
-## 🤖 MCP (Model Context Protocol) Agent
+## ✨ Key Features
 
-### What the Agent Does
-This application acts as an intelligent educational agent. It takes any learning topic and dynamically weaves it into a personalized, interactive "Hero's Journey" narrative. It generates story chapters, educational concepts, visual prompts, and interactive quizzes to test the user's knowledge as they progress. 
+*   **Emergent Narrative:** Story content is not pre-set but generated in real-time based on user-selected learning topics.
+*   **Interactive Gameplay:** Users define the narrative background and drive the plot through knowledge quizzes. Success or failure directly affects the story's development.
+*   **AI Copilot Integration:** Powered by Google Gemini 3.1 Flash, the AI serves as the core engine for narrative generation and acts as an "AI Copilot" to generate personalized review suggestions.
+*   **MCP Server Capabilities:** Exposes its educational engine to other AI agents via the Model Context Protocol.
 
-### Why it is an MCP Server
-This project implements the **Model Context Protocol (MCP)** via Server-Sent Events (SSE). By being an MCP server, SSO2 doesn't just serve human users through its web UI—it exposes its core educational storytelling engine to *other AI assistants* (like Claude Desktop or custom agents). External AIs can connect to this server and use its tools to generate gamified learning experiences for their own users seamlessly.
+---
+
+## 🤖 MCP (Model Context Protocol) Integration
+
+This application acts as an intelligent educational agent and a fully compliant **MCP Server** via Server-Sent Events (SSE). 
+
+By acting as an MCP server, SSO2 doesn't just serve human users through its web UI—it exposes its core educational storytelling engine to *other AI assistants* (like Claude Desktop or custom agents). External AIs can connect to this server and use its tools to generate gamified learning experiences for their own users seamlessly.
 
 ### Available MCP Tools
-The agent exposes a comprehensive suite of educational tools to external clients:
+
+External clients and agents can utilize the following tools:
 
 1. **`start_learning_journey`**
    * **Description:** Initializes a new educational story adventure.
@@ -45,46 +48,49 @@ The agent exposes a comprehensive suite of educational tools to external clients
    * **Parameters:** `topic`, `correctCount`, `totalQuestions`, `struggleAreas`, `heroName`, `userName`, `language`.
    * **Action:** Analyzes the user's performance data to create an encouraging summary and a 3-step actionable study plan for areas they struggled with.
 
-*(Note: The web UI features a real-time toast notification system that visually broadcasts whenever an external agent calls one of these MCP tools).*
-
 ---
 
-## 🌟 1. Background & Vision
+## 🛠️ Getting Started (Local Development)
 
-### **Background**
-Traditional narrative works often rely on pre-scripted plot branches, leading to high production costs and limited breadth of experience. The emergence of Large Language Models has made "Emergent Narrative" possible—stories are no longer pre-written but are dynamically generated through system rules, character behaviors, and user interactions.
+To run this project locally, follow these steps:
 
-### **Vision**
-SSO2's mission is to break the barrier between entertainment and education. We leverage the powerful capabilities of Google Gemini AI to create a personalized, immersive world where students become protagonists and the curriculum becomes an adventure.
+### Prerequisites
+* Node.js (v18 or higher)
+* A Google Gemini API Key
 
----
+### Installation
 
-## 🎯 2. Core Requirements Implementation
-
-*   **Emergence:** Story content is not pre-set but generated in real-time based on user-selected learning topics.
-*   **User Participation:** Users define the narrative background and drive the plot through knowledge quizzes. Success or failure directly affects the story's development.
-*   **Deep AI Integration:** AI (Google Gemini 3 Flash) serves as the core engine for narrative generation and acts as an "AI Copilot" to generate personalized review suggestions.
-
----
-
-## 🚀 Deployment Guide (GitHub & Vercel)
-
-### 1. Push to GitHub for Review
-To share this code for review, you should push it to a GitHub repository:
-1. Initialize a git repository in your project folder: `git init`
-2. Add all files: `git add .`
-3. Commit your changes: `git commit -m "Initial commit with MCP server and UI"`
-4. Link your GitHub repository and push: 
+1. **Clone the repository:**
    ```bash
-   git remote add origin <your-github-repo-url>
-   git push -u origin main
+   git clone https://github.com/yourusername/sso2-magical-learning.git
+   cd sso2-magical-learning
    ```
 
-### 2. Deploying to Vercel
-While this app uses a custom Express server (which is naturally best suited for containerized environments like Google Cloud Run), you can deploy it to Vercel by configuring it as a Serverless Function.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-**Steps for Vercel Deployment:**
-1. Create a `vercel.json` file in the root directory to route traffic to the Express server:
+3. **Set up environment variables:**
+   Create a `.env` file in the root directory and add your Gemini API key:
+   ```env
+   GEMINI_API_KEY=your_api_key_here
+   ```
+
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   The application will be available at `http://localhost:3000`.
+
+---
+
+## 🚀 Deployment
+
+### Deploying to Vercel
+This application can be deployed to Vercel. Because it utilizes a custom Express server for the MCP SSE connections, it requires a specific `vercel.json` configuration.
+
+1. Ensure you have the following `vercel.json` in your project root:
    ```json
    {
      "version": 2,
@@ -99,17 +105,19 @@ While this app uses a custom Express server (which is naturally best suited for 
      ]
    }
    ```
-2. Connect your GitHub repository to Vercel via the Vercel Dashboard.
-3. In the Vercel project settings, add your Environment Variable: `GEMINI_API_KEY`.
-4. Click **Deploy**.
+2. Connect your GitHub repository to Vercel.
+3. Add `GEMINI_API_KEY` to your Vercel Environment Variables.
+4. Deploy.
 
-> **⚠️ Important Note on Vercel & MCP:** Vercel Serverless Functions have strict execution timeouts and may drop long-lived Server-Sent Events (SSE) connections used by the MCP protocol. If your MCP client disconnects frequently on Vercel, it is highly recommended to deploy the backend to a containerized service like **Google Cloud Run**, **Render**, or **Railway**.
-
----
-
-## 🎓 Conclusion
-
-SSO2 is more than just a project; it is an exploration of future educational models. By combining the narrative structure of classic RPGs with cutting-edge generative AI technology and the Model Context Protocol, we have created an addictive, efficient, and deeply personalized learning environment.
+> **⚠️ Important Note on Vercel & MCP:** Vercel Serverless Functions have strict execution timeouts and may drop long-lived Server-Sent Events (SSE) connections used by the MCP protocol. For production MCP usage, deploying the backend to a containerized service like **Google Cloud Run**, **Render**, or **Railway** is highly recommended.
 
 ---
-**Developed with ❤️ for the AI-Based Emergent Narrative Course.**
+
+## 🎓 Vision & Background
+
+Traditional narrative works often rely on pre-scripted plot branches, leading to high production costs and limited breadth of experience. The emergence of Large Language Models has made "Emergent Narrative" possible—stories are no longer pre-written but are dynamically generated through system rules, character behaviors, and user interactions.
+
+SSO2's mission is to break the barrier between entertainment and education. We leverage the powerful capabilities of generative AI to create a personalized, immersive world where students become protagonists and the curriculum becomes an adventure.
+
+---
+*Developed as an exploration of AI-Based Emergent Narrative Experience Design.*
