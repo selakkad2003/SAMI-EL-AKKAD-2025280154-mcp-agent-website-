@@ -145,6 +145,72 @@ mcpServer.tool(
   }
 );
 
+// Tool: Get Hint
+mcpServer.tool(
+  "get_hint",
+  {
+    question: z.string().describe("The current quiz question the user is stuck on"),
+    concept: z.string().describe("The educational concept being tested"),
+    heroName: z.string().describe("The name of the hero providing the hint"),
+    language: z.string().default("English").describe("The language for the hint"),
+  },
+  async ({ question, concept, heroName, language }) => {
+    broadcastMcpLog("get_hint", { question, concept, heroName });
+    const response = await ai.models.generateContent({
+      model: TEXT_MODEL,
+      contents: `You are ${heroName}. The user is stuck on this question: "${question}" about the concept: "${concept}". Provide a helpful, in-character hint in ${language} without giving away the exact answer. Keep it under 30 words.`
+    });
+    return {
+      content: [{ type: "text", text: response.text || "No hint available." }],
+    };
+  }
+);
+
+// Tool: Explain Concept Deep Dive
+mcpServer.tool(
+  "explain_concept",
+  {
+    concept: z.string().describe("The concept to explain"),
+    heroName: z.string().describe("The name of the hero explaining"),
+    language: z.string().default("English").describe("The language for the explanation"),
+    depth: z.enum(["surface", "standard", "deep"]).default("standard").describe("Depth of the explanation"),
+  },
+  async ({ concept, heroName, language, depth }) => {
+    broadcastMcpLog("explain_concept", { concept, depth, heroName });
+    const response = await ai.models.generateContent({
+      model: TEXT_MODEL,
+      contents: `You are ${heroName}. Explain the concept of "${concept}" at a ${depth} level in ${language}. Keep it engaging, educational, and in-character. Use analogies if helpful.`
+    });
+    return {
+      content: [{ type: "text", text: response.text || "Explanation failed." }],
+    };
+  }
+);
+
+// Tool: Generate Copilot Report
+mcpServer.tool(
+  "generate_copilot_report",
+  {
+    topic: z.string().describe("The topic that was learned"),
+    correctCount: z.number().describe("Number of correct answers"),
+    totalQuestions: z.number().describe("Total number of questions asked"),
+    struggleAreas: z.array(z.string()).describe("List of concepts the user got wrong"),
+    heroName: z.string().describe("The name of the hero"),
+    userName: z.string().describe("The user's name"),
+    language: z.string().default("English").describe("The language for the report"),
+  },
+  async ({ topic, correctCount, totalQuestions, struggleAreas, heroName, userName, language }) => {
+    broadcastMcpLog("generate_copilot_report", { topic, correctCount, totalQuestions });
+    const response = await ai.models.generateContent({
+      model: TEXT_MODEL,
+      contents: `You are ${heroName}. ${userName} just finished learning about ${topic}. They got ${correctCount}/${totalQuestions} correct. They struggled with: ${struggleAreas.join(", ")}. Generate a short, encouraging performance review and a 3-step study plan in ${language}.`
+    });
+    return {
+      content: [{ type: "text", text: response.text || "Report generation failed." }],
+    };
+  }
+);
+
 // --- SSE Transport for MCP ---
 let transport: SSEServerTransport | null = null;
 

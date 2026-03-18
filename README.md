@@ -18,17 +18,32 @@ This application acts as an intelligent educational agent. It takes any learning
 This project implements the **Model Context Protocol (MCP)** via Server-Sent Events (SSE). By being an MCP server, SSO2 doesn't just serve human users through its web UI—it exposes its core educational storytelling engine to *other AI assistants* (like Claude Desktop or custom agents). External AIs can connect to this server and use its tools to generate gamified learning experiences for their own users seamlessly.
 
 ### Available MCP Tools
-The agent exposes the following tools to external clients:
+The agent exposes a comprehensive suite of educational tools to external clients:
 
 1. **`start_learning_journey`**
    * **Description:** Initializes a new educational story adventure.
-   * **Parameters:** `topic` (what to learn), `heroName` (character name), `heroRole` (character class/role), `userName` (player's name), `language`, `chapterCount`.
+   * **Parameters:** `topic`, `heroName`, `heroRole`, `userName`, `language`, `chapterCount`.
    * **Action:** Prompts the Gemini AI to generate the opening chapter, establishing the world, the first educational concept, and the initial quiz.
 
 2. **`get_next_chapter`**
    * **Description:** Advances the story based on the user's quiz performance.
-   * **Parameters:** `previousChapterText`, `userAnswer`, `isCorrect` (boolean), `heroName`, `language`.
+   * **Parameters:** `previousChapterText`, `userAnswer`, `isCorrect`, `heroName`, `language`.
    * **Action:** Evaluates the user's answer. If correct, the story advances to the next concept. If incorrect, the AI weaves a clarification of the misunderstood concept into the narrative before moving forward.
+
+3. **`get_hint`**
+   * **Description:** Provides an in-character hint for a specific question.
+   * **Parameters:** `question`, `concept`, `heroName`, `language`.
+   * **Action:** Generates a short, helpful hint without giving away the exact answer, maintaining the persona of the selected hero.
+
+4. **`explain_concept`**
+   * **Description:** Performs a deep dive into a specific educational concept.
+   * **Parameters:** `concept`, `heroName`, `language`, `depth` (surface, standard, deep).
+   * **Action:** Generates a detailed, engaging explanation of a concept using analogies, tailored to the requested depth level.
+
+5. **`generate_copilot_report`**
+   * **Description:** Generates a personalized performance review and study plan.
+   * **Parameters:** `topic`, `correctCount`, `totalQuestions`, `struggleAreas`, `heroName`, `userName`, `language`.
+   * **Action:** Analyzes the user's performance data to create an encouraging summary and a 3-step actionable study plan for areas they struggled with.
 
 *(Note: The web UI features a real-time toast notification system that visually broadcasts whenever an external agent calls one of these MCP tools).*
 
