@@ -1,0 +1,7 @@
+{
+  "name": "SSO2 - Magical Learning MCP",
+  "description": "A gamified learning platform that also acts as a Model Context Protocol (MCP) server, allowing AI agents to generate interactive educational stories.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
